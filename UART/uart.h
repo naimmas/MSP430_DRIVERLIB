@@ -1,14 +1,12 @@
 /**
  * @file uart.h
  * @author Naim MASRI (naimmas@outlook.com)
- * @brief
- *
- *
+ * @brief MSP430 UART modul kutuphanesi
  * @version 0.1
- * @date 2023-09-22
- *
+ * @date 2023-09-23
+ * 
  * @copyright Copyright (c) 2023
- *
+ * 
  */
 
 
@@ -61,21 +59,81 @@ extern "C"
 #define UART_EVEN_PARITY                                            0x02
 
 typedef struct USCI_A_UART_initParam {
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t selectClockSource;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint16_t clockPrescalar;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t firstModReg;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t secondModReg;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t parity;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t msborLsbFirst;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t numberofStopBits;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t uartMode;
+    /**
+     * @brief 
+     * @functions: 
+     * 
+     */
     uint8_t overSampling;
 } UART_initParam;
 
 #define UART_CLOCKSOURCE_SMCLK                             (BIT6)
 #define UART_CLOCKSOURCE_ACLK                              (BIT7)
-
+/**
+ * @brief 
+ * 
+ * @param param 
+ * @return STATUS_SUCCESS 
+ * @return STATUS_FAIL 
+ */
 extern bool UART_init(UART_initParam* param);
+/**
+ * @brief 
+ * 
+ */
 extern inline void UART_enable();
+/**
+ * @brief 
+ * 
+ * @param data 
+ */
 extern inline void UART_transmitData(uint8_t data);
 #endif /* INC_UART_H_ */

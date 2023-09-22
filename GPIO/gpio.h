@@ -1,8 +1,12 @@
-/* *******************************************
- *  gpio.h - MSP430G2553 GPIO modul kutuphanesidir
- *
- *  Created on: Aug 17, 2023
- *      Author: naim
+/**
+ * @file gpio.h
+ * @author Naim MASRI (naimmas@outlook.com)
+ * @brief MSP430 GPIO modul kutuphanesi
+ * @version 0.1
+ * @date 2023-09-23
+ * 
+ * @copyright Copyright (c) 2023
+ * 
  */
 
 #ifndef INC_GPIO_H_

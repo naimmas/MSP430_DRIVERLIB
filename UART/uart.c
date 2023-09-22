@@ -1,3 +1,14 @@
+/**
+ * @file uart.c
+ * @author Naim MASRI (naimmas@outlook.com)
+ * @brief MSP430 UART modul kutuphanesi
+ * @version 0.1
+ * @date 2023-09-23
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
 #include "uart.h"
 bool UART_init(UART_initParam* param)
 {
