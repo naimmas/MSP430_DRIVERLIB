@@ -8,14 +8,15 @@
  * @copyright Copyright (c) 2023
  * 
  */
+
 #pragma once
+#include "msp430.h"
+#include "stdint.h"
+#include "stdbool.h"
 #include "../common.h"
 
 #ifndef INC_GPIO_H_
 #define INC_GPIO_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
 #define GPIO_PORT_1 0
 #define GPIO_PORT_2 1
 #define GPIO_PORT_3 2
@@ -46,33 +47,12 @@ volatile unsigned char * const GPIO_registerAddresses[] = {
     &P3REN
 };
 
-inline void GPIO_setModeInput(uint8_t port, uint8_t pin)
-{
-    GPIO_SET_IN(*GPIO_registerAddresses[(port+1)+(port<<1)], pin);
-}
-inline void GPIO_setModeInputWithPullUp(uint8_t port, uint8_t pin)
-{
-    GPIO_RES_PUP(*GPIO_registerAddresses[(port+1)+(port<<1)], pin);
-}
-inline void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin)
-{
-    GPIO_RES_PDN(*GPIO_registerAddresses[(port+1)+(port<<1)], pin);
-}
-inline void GPIO_setModeOutput(uint8_t port, uint8_t pin)
-{
-    GPIO_SET_OUT(*GPIO_registerAddresses[(port+1)+(port<<1)], pin);
-}
-inline void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin)
-{
-    GPIO_WRITE_LOW(*GPIO_registerAddresses[(port)+(port<<1)], pin);
-}
-inline void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
-{
-    GPIO_WRITE_HIGH(*GPIO_registerAddresses[(port)+(port<<1)], pin);
-}
+void GPIO_setModeInput(uint8_t port, uint8_t pin);
+void GPIO_setModeInputWithPullUp(uint8_t port, uint8_t pin);
+void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin);
+void GPIO_setModeOutput(uint8_t port, uint8_t pin);
+void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin);
+void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin);
 
-#ifdef __cplusplus
-}
-#endif /* extern "C" */
 
 #endif /* INC_GPIO_H_ */

@@ -10,9 +10,9 @@
  */
 
 #pragma once
-#include "msp430.h"
+#include <msp430.h>
 #include "../common.h"
-
+#include "gpio.h"
 typedef enum{
     CLK_DIV_1 = 0,
     CLK_DIV_2 = 1,
@@ -63,15 +63,16 @@ struct BasicClock_t{
     
     void (*disableWDT)        ();
     void (*enableOscFaultInt) ();
-    enum OperationStatus_t (*setDCOFreq)       (BasicClock_t* const self);
-    enum OperationStatus_t (*configAuxClk)     (BasicClock_t* const self);
-    enum OperationStatus_t (*configMainClk)    (BasicClock_t* const self);
-    enum OperationStatus_t (*configSubMainClk) (BasicClock_t* const self);
+    OperationStatus_t (*setDCOFreq)       (BasicClock_t* const self);
+    OperationStatus_t (*configAuxClk)     (BasicClock_t* const self);
+    OperationStatus_t (*configMainClk)    (BasicClock_t* const self);
+    OperationStatus_t (*configSubMainClk) (BasicClock_t* const self);
 };
+
 void initBasicClock(BasicClock_t* basic_clk_structure);
 inline void __basic_clk_disable_wdt      ();
 inline void __enable_osc_fault_interrupt ();
-enum OperationStatus_t __basic_clk_set_dco_frq     (BasicClock_t* const self);
-enum OperationStatus_t __basic_clk_cfg_aux_clk     (BasicClock_t* const self);
-enum OperationStatus_t __basic_clk_cfg_main_clk    (BasicClock_t* const self);
-enum OperationStatus_t __basic_clk_cfg_submain_clk (BasicClock_t* const self);
+OperationStatus_t __basic_clk_set_dco_frq     (BasicClock_t* const self);
+OperationStatus_t __basic_clk_cfg_aux_clk     (BasicClock_t* const self);
+OperationStatus_t __basic_clk_cfg_main_clk    (BasicClock_t* const self);
+OperationStatus_t __basic_clk_cfg_submain_clk (BasicClock_t* const self);
