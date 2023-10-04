@@ -14,7 +14,7 @@ bool UART_init(UART_initParam* param)
 {
 
     // USCI modulunu devre disi birakmak
-    SPC_BIT_SET(UCA0CTL1, UCSWRST);
+    UART_disable();
 
     switch (param->parity)
     {
@@ -30,7 +30,7 @@ bool UART_init(UART_initParam* param)
             SPC_BIT_SET(UCA0CTL0, UCPAR);
             break;
         default:
-            return STATUS_FAIL;
+            return STATUS_FAILURE;
     }
     SPC_BIT_CLR(UCA0CTL0, UCMSB);
     UCA0CTL0 |= param->msborLsbFirst;
@@ -56,6 +56,8 @@ bool UART_init(UART_initParam* param)
     UCA0MCTL = ((param->firstModReg << 4) +
                 (param->secondModReg << 1) +
                 (param->overSampling   ));
+    
+    UART_enable();
     return STATUS_SUCCESS;
 }
 inline void UART_enable()

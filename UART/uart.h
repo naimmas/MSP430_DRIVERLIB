@@ -61,55 +61,46 @@ extern "C"
 typedef struct USCI_A_UART_initParam {
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t selectClockSource;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint16_t clockPrescalar;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t firstModReg;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t secondModReg;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t parity;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t msborLsbFirst;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t numberofStopBits;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t uartMode;
     /**
      * @brief 
-     * @functions: 
      * 
      */
     uint8_t overSampling;
@@ -130,6 +121,7 @@ extern bool UART_init(UART_initParam* param);
  * 
  */
 extern inline void UART_enable();
+extern inline void UART_disable();
 /**
  * @brief 
  * 
@@ -137,3 +129,6 @@ extern inline void UART_enable();
  */
 extern inline void UART_transmitData(uint8_t data);
 #endif /* INC_UART_H_ */
+#ifdef __cplusplus
+}
+#endif

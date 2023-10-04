@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2023
  * 
  */
+#pragma once
 
 #ifndef INC_GPIO_H_
 #define INC_GPIO_H_
@@ -15,7 +16,6 @@
 extern "C" {
 #endif
 #include "../common.h"
-
 
 #define GPIO_PORT_1 0
 #define GPIO_PORT_2 1
