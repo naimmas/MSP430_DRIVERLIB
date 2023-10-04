@@ -9,14 +9,13 @@
  * 
  */
 #pragma once
+#include "../common.h"
 
 #ifndef INC_GPIO_H_
 #define INC_GPIO_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../common.h"
-
 #define GPIO_PORT_1 0
 #define GPIO_PORT_2 1
 #define GPIO_PORT_3 2

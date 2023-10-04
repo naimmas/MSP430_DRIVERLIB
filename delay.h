@@ -12,6 +12,7 @@
 #pragma once
 
 #include "common.h"
+#define FRQ_CPU FRQ_1MHz
 
 #ifndef FRQ_CPU
 #error CPU clock frequency is not defined

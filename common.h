@@ -9,10 +9,10 @@
  * 
  */
 #pragma once
-
 #include "stdint.h"
 #include "stdbool.h"
-
+#include "CLOCK/basic_clk.h"
+#include "GPIO/gpio.h"
 #ifndef LOCAL_TEST
 #include "msp430.h"
 #endif
@@ -105,11 +105,11 @@
 /**
  * @brief Function operation status return values 
  */
-typedef enum 
+enum OperationStatus_t
 {
     STATUS_SUCCESS = 1,
     STATUS_FAILURE = 0
-} OperationStatus_t;
+};
 
 /**
  * @brief Define a boolean type that can be used in all libraries

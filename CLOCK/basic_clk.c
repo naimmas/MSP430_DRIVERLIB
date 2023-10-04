@@ -9,7 +9,7 @@
  *
  */
 
-#include "basic_clk.h"
+#include "../common.h"
 
 void initBasicClock(BasicClock_t* basic_clk_structure)
 {
@@ -33,15 +33,15 @@ void initBasicClock(BasicClock_t* basic_clk_structure)
     __basic_clk_cfg_submain_clk(basic_clk_structure);
 }
 
-static inline void(__basic_clk_disable_wdt)()
+inline void(__basic_clk_disable_wdt)()
 {
     WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 }
-static inline void(__enable_osc_fault_interrupt)()
+inline void(__enable_osc_fault_interrupt)()
 {
     SPC_BIT_SET(IE1, OFIE);
 }
-static OperationStatus_t(__basic_clk_set_dco_frq)(BasicClock_t *const self)
+enum OperationStatus_t __basic_clk_set_dco_frq(BasicClock_t *const self)
 {
     uint8_t caldco = 0;
     uint8_t calbc1 = 0;
@@ -71,7 +71,7 @@ static OperationStatus_t(__basic_clk_set_dco_frq)(BasicClock_t *const self)
     if(0xff == caldco ||  0xff == calbc1) return STATUS_FAILURE;
     return STATUS_SUCCESS;
 }
-static OperationStatus_t(__basic_clk_cfg_aux_clk)(BasicClock_t *const self)
+enum OperationStatus_t __basic_clk_cfg_aux_clk(BasicClock_t *const self)
 {
     if(self->aux_clk == ACLK_SRC_32KHZ)
     {
@@ -98,7 +98,7 @@ static OperationStatus_t(__basic_clk_cfg_aux_clk)(BasicClock_t *const self)
     }
     return STATUS_SUCCESS;
 }
-static OperationStatus_t(__basic_clk_cfg_main_clk)(BasicClock_t *const self)
+enum OperationStatus_t __basic_clk_cfg_main_clk(BasicClock_t *const self)
 {
     SPC_BIT_CLR(BCSCTL2, BIT6|BIT7);
     SPC_BIT_SET(BCSCTL2, self->main_clk);
@@ -106,7 +106,7 @@ static OperationStatus_t(__basic_clk_cfg_main_clk)(BasicClock_t *const self)
     SPC_BIT_SET(BCSCTL2, self->main_clk_divider);
     return STATUS_SUCCESS;
 }
-static OperationStatus_t(__basic_clk_cfg_submain_clk)(BasicClock_t *const self)
+enum OperationStatus_t __basic_clk_cfg_submain_clk(BasicClock_t *const self)
 {
     SPC_BIT_CLR(BCSCTL2, BIT3);
     SPC_BIT_SET(BCSCTL2, self->submain_clk);
