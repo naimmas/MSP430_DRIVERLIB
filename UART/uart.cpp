@@ -10,81 +10,68 @@
  */
 
 #include "uart.h"
-bool UART_init(UART_initParam* param)
+OperationStatus_t UART_init(UART_initParam_t* self)
 {
 
     // USCI modulunu devre disi birakmak
-    UART_disable();
-
-    switch (param->parity)
-    {
-        case UART_NO_PARITY:
-            SPC_BIT_CLR(UCA0CTL0, UCPEN);
-            break;
-        case UART_ODD_PARITY:
-            SPC_BIT_SET(UCA0CTL0, UCPEN);
-            SPC_BIT_CLR(UCA0CTL0, UCPAR);
-            break;
-        case UART_EVEN_PARITY:
-            SPC_BIT_SET(UCA0CTL0, UCPEN);
-            SPC_BIT_SET(UCA0CTL0, UCPAR);
-            break;
-        default:
-            return STATUS_FAILURE;
-    }
+    __uart_disable();
+    P1SEL = BIT1 + BIT2 ;                     // P1.1 = RXD, P1.2=TXD
+    P1SEL2 = BIT1 + BIT2 ;                    // P1.1 = RXD, P1.2=TXD
     SPC_BIT_CLR(UCA0CTL0, UCMSB);
-    UCA0CTL0 |= param->msborLsbFirst;
+    SPC_BIT_SET(UCA0CTL0, self->msborLsbFirst);
 
     SPC_BIT_CLR(UCA0CTL0, UC7BIT);
+    SPC_BIT_SET(UCA0CTL0, self->uartCharLength);
 
     SPC_BIT_CLR(UCA0CTL0, UCSPB);
-    UCA0CTL0 |= param->numberofStopBits;
+    SPC_BIT_SET(UCA0CTL0, self->numberofStopBits);
 
-    SPC_BIT_CLR(UCA0CTL0, UCMODE0);
-    UCA0CTL0 |= param->uartMode;
+    SPC_BIT_CLR(UCA0CTL0, UCMODE0 | UCMODE1);
+    SPC_BIT_SET(UCA0CTL0, self->uartMode);
 
     SPC_BIT_CLR(UCA0CTL0, UCSYNC);
 
-    SPC_BIT_SET(UCA0CTL1, UCSSEL_3);
-    SPC_BIT_CLR(UCA0CTL1, param->selectClockSource);
+    SPC_BIT_CLR(UCA0CTL1, UCSSEL0|UCSSEL1);
+    SPC_BIT_SET(UCA0CTL1, self->selectClockSource);
 
     SPC_BIT_CLR(UCA0CTL1, UCRXEIE + UCBRKIE + UCDORM + UCTXADDR + UCTXBRK);
 
-    UCA0BR0 = GET_LOW_BYTE(param->clockPrescalar);
-    UCA0BR1 = GET_HIGH_BYTE(param->clockPrescalar);
+    UCA0BR0 = GET_LOW_BYTE(self->clockPrescalar);
+    UCA0BR1 = GET_HIGH_BYTE(self->clockPrescalar);
 
-    UCA0MCTL = ((param->firstModReg << 4) +
-                (param->secondModReg << 1) +
-                (param->overSampling   ));
-    
-    UART_enable();
+    UCA0MCTL = ((self->firstModReg << 4) +
+                (self->secondModReg << 1) +
+                (self->overSampling   ));
+    SPC_BIT_CLR(UCA0CTL0, UCPEN | UCPAR);
+    SPC_BIT_SET(UCA0CTL0, self->parity);
+
+    self->enable     = __uart_enable;
+    self->disable    = __uart_disable;
+    self->print  = __uart_puts;
+    self->read   = __uart_receiveData;
+    self->setLoopBack    = __uart_loopbackEnable;
+    __uart_enable();
     return STATUS_SUCCESS;
 }
-inline void UART_enable()
+inline void __uart_enable()
 {
     SPC_BIT_CLR(UCA0CTL1, UCSWRST);
 }
-inline void UART_disable()
+inline void __uart_disable()
 {
     SPC_BIT_SET(UCA0CTL1, UCSWRST);
 }
-inline void UART_setDormant()
-{
-    SPC_BIT_SET(UCA0CTL1, UCDORM);
-}
-inline void UART_resetDormant()
-{
-    SPC_BIT_CLR(UCA0CTL1, UCDORM);
-}
-inline void UART_loopbackEnable()
-{
-    SPC_BIT_SET(UCA0STAT, UCLISTEN);
-}
-inline void UART_loopbackDisable()
+inline void __uart_loopbackEnable(uint8_t enable)
 {
     SPC_BIT_CLR(UCA0STAT, UCLISTEN);
+    SPC_BIT_SET(UCA0STAT, enable<<7);
 }
-inline void UART_transmitData(uint8_t data)
+void __uart_puts(const char* msg)
+{
+    while(*msg)
+        __uart_transmitData(*msg++);
+}
+inline void __uart_transmitData(unsigned char data)
 {
     if(SPC_BIT_CHK(IE2, UCA0TXIE))
     {
@@ -93,7 +80,7 @@ inline void UART_transmitData(uint8_t data)
     while(SPC_BIT_CHK(UCA0STAT, UCBUSY));
     UCA0TXBUF = data;
 }
-uint8_t UART_receiveData()
+uint8_t __uart_receiveData()
 {
     if(SPC_BIT_CHK(IE2, UCA0RXIE))
     {

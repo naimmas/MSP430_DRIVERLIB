@@ -10,8 +10,7 @@
  */
 
 
-#ifndef INC_UART_H_
-#define INC_UART_H_
+#pragma once
 
 /*
 *  | Address|  Acronym      |  Register Name                 |
@@ -42,10 +41,6 @@
 *    5. Enable interrupts (optional) via UCAxRXIE and/or UCAxTXIE
 */
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 #include "../common.h"
 
 //*****************************************************************************
@@ -54,81 +49,65 @@ extern "C"
 // functions: USCI_A_UART_init().
 //
 //*****************************************************************************
-#define UART_NO_PARITY                                              0x00
-#define UART_ODD_PARITY                                             0x01
-#define UART_EVEN_PARITY                                            0x02
+
+typedef enum{
+    NO_PARITY = 0,
+    ODD_PARITY = UCPEN,
+    EVEN_PARITY = UCPEN | UCPAR
+}UartParity_t;
+
+typedef enum{
+    LSB_FIRST = 0, 
+    MSB_FIRST = UCMSB
+}UartTxBit_t;
+
+typedef enum{
+    DATA_8_BIT = 0,
+    DATA_7_BIT = UC7BIT
+}UartCharLength_t;
+
+typedef enum{
+    STOP_BIT_1 = 0,
+    STOP_BIT_2 = UCSPB
+}UartStopBit_t;
+
+typedef enum{
+    UART_MODE = UCMODE_0,
+    IDLE_MODE = UCMODE_1,
+    ADRESS_MODE = UCMODE_2,
+    AUTO_BAUD_RATE_MODE = UCMODE_3
+}UartMode_t;
+
+typedef enum{
+    EXT_CLK = UCSSEL_0,
+    AUX_CLK = UCSSEL_1, 
+    SM_CLK = UCSSEL_3
+}UartClkSource_t;
 
 typedef struct USCI_A_UART_initParam {
-    /**
-     * @brief 
-     * 
-     */
-    uint8_t selectClockSource;
-    /**
-     * @brief 
-     * 
-     */
+    UartClkSource_t selectClockSource;
     uint16_t clockPrescalar;
-    /**
-     * @brief 
-     * 
-     */
     uint8_t firstModReg;
-    /**
-     * @brief 
-     * 
-     */
     uint8_t secondModReg;
-    /**
-     * @brief 
-     * 
-     */
-    uint8_t parity;
-    /**
-     * @brief 
-     * 
-     */
-    uint8_t msborLsbFirst;
-    /**
-     * @brief 
-     * 
-     */
-    uint8_t numberofStopBits;
-    /**
-     * @brief 
-     * 
-     */
-    uint8_t uartMode;
-    /**
-     * @brief 
-     * 
-     */
+    UartParity_t parity;
+    UartTxBit_t msborLsbFirst;
+    UartStopBit_t numberofStopBits;
+    UartMode_t uartMode;
+    UartCharLength_t uartCharLength;
     uint8_t overSampling;
-} UART_initParam;
 
-#define UART_CLOCKSOURCE_SMCLK                             (BIT6)
-#define UART_CLOCKSOURCE_ACLK                              (BIT7)
-/**
- * @brief 
- * 
- * @param param 
- * @return STATUS_SUCCESS 
- * @return STATUS_FAIL 
- */
-extern bool UART_init(UART_initParam* param);
-/**
- * @brief 
- * 
- */
-extern inline void UART_enable();
-extern inline void UART_disable();
-/**
- * @brief 
- * 
- * @param data 
- */
-extern inline void UART_transmitData(uint8_t data);
-#endif /* INC_UART_H_ */
-#ifdef __cplusplus
-}
-#endif
+    void (*enable) ();
+    void (*disable) ();
+    void (*print) (const char* msg);
+    unsigned char (*read) ();
+    void (*setLoopBack)(uint8_t enable);
+}UART_initParam_t;
+
+OperationStatus_t UART_init(UART_initParam_t* self);
+
+inline void __uart_enable();
+inline void __uart_disable();
+inline void __uart_loopbackEnable(uint8_t enable);
+void __uart_puts(const char* msg);
+inline void __uart_transmitData(unsigned char data);
+uint8_t __uart_receiveData();

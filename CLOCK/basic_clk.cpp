@@ -11,7 +11,7 @@
 
 #include "basic_clk.h"
 
-void initBasicClock(BasicClock_t* basic_clk_structure)
+void defaultBasicClock(BasicClock_t* basic_clk_structure)
 {
     basic_clk_structure->dco_freq = DCO_FRQ_16MHZ;
     basic_clk_structure->aux_clk = ACLK_SRC_VLO;
@@ -21,12 +21,16 @@ void initBasicClock(BasicClock_t* basic_clk_structure)
     basic_clk_structure->submain_clk_divider = CLK_DIV_1;
     basic_clk_structure->main_clk_divider = CLK_DIV_1;
     basic_clk_structure->xcap = XCAP_1pF;
+}
+void initBasicClock(BasicClock_t* basic_clk_structure)
+{
     basic_clk_structure->disableWDT = __basic_clk_disable_wdt;
     basic_clk_structure->enableOscFaultInt = __enable_osc_fault_interrupt;
     basic_clk_structure->setDCOFreq = __basic_clk_set_dco_frq;
     basic_clk_structure->configAuxClk = __basic_clk_cfg_aux_clk;
     basic_clk_structure->configMainClk = __basic_clk_cfg_main_clk;
     basic_clk_structure->configSubMainClk = __basic_clk_cfg_submain_clk;
+    __basic_clk_disable_wdt();
     __basic_clk_set_dco_frq(basic_clk_structure);
     __basic_clk_cfg_aux_clk(basic_clk_structure);
     __basic_clk_cfg_main_clk(basic_clk_structure);
@@ -69,6 +73,10 @@ OperationStatus_t __basic_clk_set_dco_frq(BasicClock_t *const self)
         break;
     }
     if(0xff == caldco ||  0xff == calbc1) return STATUS_FAILURE;
+    
+    DCOCTL = 0;                               // Select lowest DCOx and MODx settings
+    BCSCTL1 = calbc1;
+    DCOCTL  = caldco;
     return STATUS_SUCCESS;
 }
 OperationStatus_t __basic_clk_cfg_aux_clk(BasicClock_t *const self)
@@ -87,7 +95,7 @@ OperationStatus_t __basic_clk_cfg_aux_clk(BasicClock_t *const self)
     SPC_BIT_SET(BCSCTL3, self->aux_clk);
 
     SPC_BIT_CLR(BCSCTL1, BIT4 | BIT5);
-    SPC_BIT_SET(BCSCTL1, self->aux_clk_divider);
+    SPC_BIT_SET(BCSCTL1, self->aux_clk_divider<<4);
 
     if(self->aux_clk == ACLK_SRC_32KHZ)
     {
@@ -103,7 +111,7 @@ OperationStatus_t __basic_clk_cfg_main_clk(BasicClock_t *const self)
     SPC_BIT_CLR(BCSCTL2, BIT6|BIT7);
     SPC_BIT_SET(BCSCTL2, self->main_clk);
     SPC_BIT_CLR(BCSCTL2, BIT5|BIT4);
-    SPC_BIT_SET(BCSCTL2, self->main_clk_divider);
+    SPC_BIT_SET(BCSCTL2, self->main_clk_divider<<4);
     return STATUS_SUCCESS;
 }
 OperationStatus_t __basic_clk_cfg_submain_clk(BasicClock_t *const self)
@@ -111,6 +119,6 @@ OperationStatus_t __basic_clk_cfg_submain_clk(BasicClock_t *const self)
     SPC_BIT_CLR(BCSCTL2, BIT3);
     SPC_BIT_SET(BCSCTL2, self->submain_clk);
     SPC_BIT_CLR(BCSCTL2, BIT2|BIT1);
-    SPC_BIT_SET(BCSCTL2, self->submain_clk_divider);
+    SPC_BIT_SET(BCSCTL2, self->submain_clk_divider<<1);
     return STATUS_SUCCESS;
 }

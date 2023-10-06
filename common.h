@@ -110,14 +110,6 @@ typedef enum OperationStatus_t
     STATUS_FAILURE = 0
 }OperationStatus_t;
 
-/**
- * @brief Define a boolean type that can be used in all libraries
- */
 
-typedef enum
-{
-  FALSE=0,
-  TRUE=1
-} bool_t;
 
 
