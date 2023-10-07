@@ -12,7 +12,7 @@
 #pragma once
 #include <msp430.h>
 #include "../common.h"
-#include "gpio.h"
+#include "../GPIO/gpio.h"
 typedef enum{
     CLK_DIV_1 = 0,
     CLK_DIV_2 = 1,

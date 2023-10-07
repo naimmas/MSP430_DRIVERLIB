@@ -107,7 +107,7 @@ OperationStatus_t UART_init(UART_initParam_t* self);
 
 inline void __uart_enable();
 inline void __uart_disable();
-inline void __uart_loopbackEnable(uint8_t enable);
+void __uart_loopbackEnable(uint8_t enable);
 void __uart_puts(const char* msg);
 inline void __uart_transmitData(unsigned char data);
 uint8_t __uart_receiveData();

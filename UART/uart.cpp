@@ -50,6 +50,7 @@ OperationStatus_t UART_init(UART_initParam_t* self)
     self->print  = __uart_puts;
     self->read   = __uart_receiveData;
     self->setLoopBack    = __uart_loopbackEnable;
+
     __uart_enable();
     return STATUS_SUCCESS;
 }
@@ -61,7 +62,7 @@ inline void __uart_disable()
 {
     SPC_BIT_SET(UCA0CTL1, UCSWRST);
 }
-inline void __uart_loopbackEnable(uint8_t enable)
+void __uart_loopbackEnable(uint8_t enable)
 {
     SPC_BIT_CLR(UCA0STAT, UCLISTEN);
     SPC_BIT_SET(UCA0STAT, enable<<7);
