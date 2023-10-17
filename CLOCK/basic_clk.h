@@ -73,19 +73,9 @@ struct BasicClock_t{
 };
 
 void initBasicClock(BasicClock_t* basic_clk_structure);
-<<<<<<< HEAD
-inline void __basic_clk_disable_wdt      ();
-inline void __enable_osc_fault_interrupt ();
-
-OperationStatus_t __basic_clk_set_dco_frq     (BasicClock_t* const self);
-OperationStatus_t __basic_clk_cfg_aux_clk     (BasicClock_t* const self);
-OperationStatus_t __basic_clk_cfg_main_clk    (BasicClock_t* const self);
-OperationStatus_t __basic_clk_cfg_submain_clk (BasicClock_t* const self);
-=======
 static inline void __basic_clk_disable_wdt      ();
 static inline void __enable_osc_fault_interrupt ();
 static OperationStatus_t __basic_clk_set_dco_frq     (BasicClock_t* const self);
 static OperationStatus_t __basic_clk_cfg_aux_clk     (BasicClock_t* const self);
 static OperationStatus_t __basic_clk_cfg_main_clk    (BasicClock_t* const self);
 static OperationStatus_t __basic_clk_cfg_submain_clk (BasicClock_t* const self);
->>>>>>> b146977 (add i2c lib & change to *.c)
