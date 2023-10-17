@@ -37,11 +37,11 @@ void initBasicClock(BasicClock_t* basic_clk_structure)
     __basic_clk_cfg_submain_clk(basic_clk_structure);
 }
 
-inline void(__basic_clk_disable_wdt)()
+inline void __basic_clk_disable_wdt()
 {
     WDTCTL = WDTPW + WDTHOLD; // Stop WDT
 }
-inline void(__enable_osc_fault_interrupt)()
+inline void __enable_osc_fault_interrupt()
 {
     SPC_BIT_SET(IE1, OFIE);
 }

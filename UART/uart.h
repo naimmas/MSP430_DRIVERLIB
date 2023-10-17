@@ -43,6 +43,7 @@
 
 #include "../common.h"
 #include "msp430.h"
+#include "msp430.h"
 //*****************************************************************************
 //
 // The following are values that can be passed to the param parameter for
@@ -105,6 +106,12 @@ typedef struct USCI_A_UART_initParam {
 
 OperationStatus_t UART_init(UART_initParam_t* self);
 
+static inline void __uart_enable();
+static inline void __uart_disable();
+static inline void __uart_loopbackEnable(uint8_t enable);
+static void __uart_puts(const char* msg);
+static inline void __uart_transmitData(unsigned char data);
+static uint8_t __uart_receiveData();
 static inline void __uart_enable();
 static inline void __uart_disable();
 static inline void __uart_loopbackEnable(uint8_t enable);
