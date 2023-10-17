@@ -10,7 +10,7 @@
  */
 
 #include "basic_clk.h"
-
+#include "gpio.h"
 void defaultBasicClock(BasicClock_t* basic_clk_structure)
 {
     basic_clk_structure->dco_freq = DCO_FRQ_16MHZ;

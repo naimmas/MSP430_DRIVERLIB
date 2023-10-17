@@ -12,7 +12,6 @@
 #pragma once
 #include <msp430.h>
 #include "../common.h"
-#include "gpio.h"
 typedef enum{
     CLK_DIV_1 = 0,
     CLK_DIV_2 = 1,
@@ -70,10 +69,9 @@ struct BasicClock_t{
 };
 
 void initBasicClock(BasicClock_t* basic_clk_structure);
-inline void __basic_clk_disable_wdt      ();
-inline void __enable_osc_fault_interrupt ();
-
-OperationStatus_t __basic_clk_set_dco_frq     (BasicClock_t* const self);
-OperationStatus_t __basic_clk_cfg_aux_clk     (BasicClock_t* const self);
-OperationStatus_t __basic_clk_cfg_main_clk    (BasicClock_t* const self);
-OperationStatus_t __basic_clk_cfg_submain_clk (BasicClock_t* const self);
+static inline void __basic_clk_disable_wdt      ();
+static inline void __enable_osc_fault_interrupt ();
+static OperationStatus_t __basic_clk_set_dco_frq     (BasicClock_t* const self);
+static OperationStatus_t __basic_clk_cfg_aux_clk     (BasicClock_t* const self);
+static OperationStatus_t __basic_clk_cfg_main_clk    (BasicClock_t* const self);
+static OperationStatus_t __basic_clk_cfg_submain_clk (BasicClock_t* const self);

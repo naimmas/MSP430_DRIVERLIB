@@ -53,25 +53,26 @@ OperationStatus_t UART_init(UART_initParam_t* self)
     __uart_enable();
     return STATUS_SUCCESS;
 }
-inline void __uart_enable()
+
+static inline void __uart_enable()
 {
     SPC_BIT_CLR(UCA0CTL1, UCSWRST);
 }
-inline void __uart_disable()
+static inline void __uart_disable()
 {
     SPC_BIT_SET(UCA0CTL1, UCSWRST);
 }
-inline void __uart_loopbackEnable(uint8_t enable)
+static inline void __uart_loopbackEnable(uint8_t enable)
 {
     SPC_BIT_CLR(UCA0STAT, UCLISTEN);
     SPC_BIT_SET(UCA0STAT, enable<<7);
 }
-void __uart_puts(const char* msg)
+static void __uart_puts(const char* msg)
 {
     while(*msg)
         __uart_transmitData(*msg++);
 }
-inline void __uart_transmitData(unsigned char data)
+static inline void __uart_transmitData(unsigned char data)
 {
     if(SPC_BIT_CHK(IE2, UCA0TXIE))
     {
@@ -80,7 +81,7 @@ inline void __uart_transmitData(unsigned char data)
     while(SPC_BIT_CHK(UCA0STAT, UCBUSY));
     UCA0TXBUF = data;
 }
-uint8_t __uart_receiveData()
+static uint8_t __uart_receiveData()
 {
     if(SPC_BIT_CHK(IE2, UCA0RXIE))
     {
