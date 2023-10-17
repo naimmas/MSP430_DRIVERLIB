@@ -25,7 +25,7 @@
 // November 2007
 // Built with IAR Embedded Workbench Version: 3.42A
 //******************************************************************************
-#include "msp430x26x.h"                        // device specific header
+#include "msp430.h"                        // device specific header
 //#include "msp430x22x4.h"
 //#include "msp430x23x0.h"
 //#include "msp430xG46x.h"

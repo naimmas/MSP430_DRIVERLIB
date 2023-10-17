@@ -69,8 +69,8 @@ void TI_USCI_I2C_slaveinit(void (*SCallback)(),
     TI_transmit_callback = TCallback;
 }
 
-// USCI_B0 Data ISR
-interrupt(USCIAB0TX_VECTOR) usci_i2c_data_isr(void)
+#pragma vector = USCIAB0TX_VECTOR
+__interrupt void usci_i2c_data_isr(void)
 {
     if (IFG2 & UCB0TXIFG)
         TI_transmit_callback(&UCB0TXBUF);
@@ -78,8 +78,8 @@ interrupt(USCIAB0TX_VECTOR) usci_i2c_data_isr(void)
         TI_receive_callback(UCB0RXBUF);
 }
 
-// USCI_B0 State ISR
-interrupt(USCIAB0RX_VECTOR) usci_i2c_state_isr(void)
+#pragma vector = USCIAB0RX_VECTOR
+__interrupt void  usci_i2c_state_isr(void)
 {
     UCB0STAT &= ~UCSTTIFG;                    // Clear start condition int flag
     TI_start_callback();
