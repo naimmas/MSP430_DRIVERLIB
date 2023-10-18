@@ -50,6 +50,8 @@
 //
 //*****************************************************************************
 
+
+
 typedef enum{
     NO_PARITY = 0,
     ODD_PARITY = UCPEN,
@@ -72,6 +74,13 @@ typedef enum{
 }UartStopBit_t;
 
 typedef enum{
+    NO_INTERRUPT = 0,
+    RX_INTERRUPT = UCA0RXIE,
+    TX_INTERRUPT = UCA0TXIE,
+    RXTX_INTERRUPT = UCA0RXIE | UCA0TXIE
+}UartInterruptMode_t;
+
+typedef enum{
     UART_MODE = UCMODE_0,
     IDLE_MODE = UCMODE_1,
     ADRESS_MODE = UCMODE_2,
@@ -84,7 +93,7 @@ typedef enum{
     SM_CLK = UCSSEL_3
 }UartClkSource_t;
 
-typedef struct USCI_A_UART_initParam {
+typedef struct USCI_A_UART_device {
     UartClkSource_t selectClockSource;
     uint16_t clockPrescalar;
     uint8_t firstModReg;
@@ -98,16 +107,18 @@ typedef struct USCI_A_UART_initParam {
 
     void (*enable) ();
     void (*disable) ();
-    void (*print) (const char* msg);
+    void (*print) (const char* msg, const uint16_t dataSize);
     unsigned char (*read) ();
     void (*setLoopBack)(uint8_t enable);
-}UART_initParam_t;
+    void (*setInterrupt)(UartInterruptMode_t interrupt_mode, void (*transmit_callback)(), void (*recieve_callback)());
+}UartDevice_t;
 
-OperationStatus_t UART_init(UART_initParam_t* self);
+OperationStatus_t initUART(UartDevice_t* self);
 
 static inline void __uart_enable();
 static inline void __uart_disable();
 static inline void __uart_loopbackEnable(uint8_t enable);
-static void __uart_puts(const char* msg);
+static void __uart_puts(const char* msg, const uint16_t dataSize);
 static inline void __uart_transmitData(unsigned char data);
 static uint8_t __uart_receiveData();
+static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode, void (*transmit_callback)(), void (*recieve_callback)());
