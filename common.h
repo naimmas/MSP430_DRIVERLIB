@@ -56,7 +56,7 @@
  * @param nbit: number of bit want to check (from 0)
  * @return 0 or 1
  */
-#define BIT_CHK(byte, nbit) ((byte) & (1 << (nbit)))
+#define BIT_CHK(byte, nbit) (bool)((byte) & (1 << (nbit)))
 
 /**
  * @brief Set n.bit in byte 0->1

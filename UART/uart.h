@@ -81,10 +81,10 @@ typedef enum{
 }UartInterruptMode_t;
 
 typedef enum{
-    UART_MODE = UCMODE_0,
-    IDLE_MODE = UCMODE_1,
-    ADRESS_MODE = UCMODE_2,
-    AUTO_BAUD_RATE_MODE = UCMODE_3
+    UART_NORMAL_MODE = UCMODE_0,
+    UART_IDLE_MODE = UCMODE_1,
+    UART_ADRESS_MODE = UCMODE_2,
+    UART_AUTO_BAUD_RATE_MODE = UCMODE_3
 }UartMode_t;
 
 typedef enum{

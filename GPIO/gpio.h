@@ -24,6 +24,8 @@
 #define GPIO_READ(port, pin)        BIT_CHK(port, pin)
 #define GPIO_WRITE_HIGH(port, pin)  BIT_SET(port, pin)
 #define GPIO_WRITE_LOW(port, pin)   BIT_CLR(port, pin)
+#define GPIO_TOGGLE(port, pin)      BIT_TOG(port, pin);
+
 #define GPIO_RES_PDN(port, pin)  { \
             GPIO_SET_IN(port,pin); \
             BIT_SET(port, pin); \
@@ -39,6 +41,9 @@ inline void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin);
 inline void GPIO_setModeOutput(uint8_t port, uint8_t pin);
 inline void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin);
 inline void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin);
-
+inline void GPIO_toggleDigitalPin(uint8_t port, uint8_t pin);
+inline bool GPIO_getDigitalPin(uint8_t port, uint8_t pin);
+inline void GPIO_enableInterrupt(uint8_t port, uint8_t pin, bool edge_select);
+inline void GPIO_disableInterrupt(uint8_t port, uint8_t pin);
 
 #endif /* INC_GPIO_H_ */

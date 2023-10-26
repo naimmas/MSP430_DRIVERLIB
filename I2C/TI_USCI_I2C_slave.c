@@ -62,7 +62,7 @@ void TI_USCI_I2C_slaveinit(void (*SCallback)(),
     UCB0CTL0 = UCMODE_3 + UCSYNC;             // I2C Slave, synchronous mode
     UCB0I2COA = slave_address;                // set own (slave) address
     UCB0CTL1 &= ~UCSWRST;                     // Clear SW reset, resume operation
-    IE2 |= UCB0TXIE + UCB0RXIE;               // Enable TX interrupt
+    IE2 |= UCB0TXIE + UCB0RXIE; //UCB0TXIE + UCB0RXIE;               // Enable TX interrupt
     UCB0I2CIE |= UCSTTIE;                     // Enable STT interrupt
     TI_start_callback = SCallback;
     TI_receive_callback = RCallback;
