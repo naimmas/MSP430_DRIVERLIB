@@ -110,7 +110,7 @@ typedef struct USCI_A_UART_device {
     void (*print) (const char* msg, const uint16_t dataSize);
     unsigned char (*read) ();
     void (*setLoopBack)(uint8_t enable);
-    void (*setInterrupt)(UartInterruptMode_t interrupt_mode, void (*transmit_callback)(), void (*recieve_callback)());
+    void (*setInterrupt)(UartInterruptMode_t interrupt_mode);
 }UartDevice_t;
 
 OperationStatus_t initUART(UartDevice_t* self);
@@ -121,4 +121,4 @@ static inline void __uart_loopbackEnable(uint8_t enable);
 static void __uart_puts(const char* msg, const uint16_t dataSize);
 static inline void __uart_transmitData(unsigned char data);
 static uint8_t __uart_receiveData();
-static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode, void (*transmit_callback)(), void (*recieve_callback)());
+static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode);

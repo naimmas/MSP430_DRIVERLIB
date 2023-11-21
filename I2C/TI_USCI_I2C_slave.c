@@ -58,29 +58,14 @@ void TI_USCI_I2C_slaveinit(void (*SCallback)(),
 {
     P1SEL |= SDA_PIN + SCL_PIN;               // Assign I2C pins to USCI_B0
     P1SEL2 |= SDA_PIN + SCL_PIN;              // Assign I2C pins to USCI_B0
+    IE2 &= ~UCB0TXIE;                         // Disable TX interrupt
     UCB0CTL1 |= UCSWRST;                      // Enable SW reset
     UCB0CTL0 = UCMODE_3 + UCSYNC;             // I2C Slave, synchronous mode
     UCB0I2COA = slave_address;                // set own (slave) address
     UCB0CTL1 &= ~UCSWRST;                     // Clear SW reset, resume operation
-    IE2 |= UCB0TXIE + UCB0RXIE; //UCB0TXIE + UCB0RXIE;               // Enable TX interrupt
-    UCB0I2CIE |= UCSTTIE;                     // Enable STT interrupt
+    UCB0I2CIE |= UCSTPIE + UCSTTIE;           // Enable STT and STP interrupt
+    IE2 |= UCB0RXIE;                          // Enable RX interrupt
     TI_start_callback = SCallback;
     TI_receive_callback = RCallback;
     TI_transmit_callback = TCallback;
-}
-
-#pragma vector = USCIAB0TX_VECTOR
-__interrupt void usci_i2c_data_isr(void)
-{
-    if (IFG2 & UCB0TXIFG)
-        TI_transmit_callback(&UCB0TXBUF);
-    else
-        TI_receive_callback(UCB0RXBUF);
-}
-
-#pragma vector = USCIAB0RX_VECTOR
-__interrupt void  usci_i2c_state_isr(void)
-{
-    UCB0STAT &= ~UCSTTIFG;                    // Clear start condition int flag
-    TI_start_callback();
 }

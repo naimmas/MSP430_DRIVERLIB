@@ -88,7 +88,7 @@
  * @param bitName: bit name specified in MSP430 library (BIT0, BIT1, ...)
  * @return 0 or 1
  */
-#define SPC_BIT_CHK(byte, bitName) ((byte) & (bitName))
+#define SPC_BIT_CHK(byte, bitName) (bool)((byte) & (bitName))
 
 /**
  * @brief Get least significent byte in word

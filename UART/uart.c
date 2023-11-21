@@ -10,8 +10,6 @@
  */
 
 #include "uart.h"
-void (*UART_receive_callback)();
-void (*UART_transmit_callback)();
 
 OperationStatus_t initUART(UartDevice_t *self)
 {
@@ -103,24 +101,10 @@ static uint8_t __uart_receiveData()
     return UCA0RXBUF;
 }
 
-static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode, void (*transmit_callback)(), void (*recieve_callback)())
+static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode)
 {
     __disable_interrupt();
     SPC_BIT_CLR(IE2, UCA0TXIE | UCA0RXIE);
     SPC_BIT_SET(IE2, interrupt_mode);
-    UART_transmit_callback = transmit_callback;
-    UART_receive_callback = recieve_callback;
     __enable_interrupt();
-}
-
-#pragma vector = USCIAB0TX_VECTOR
-__interrupt void USCI0TX_ISR(void)
-{
-    UART_transmit_callback();
-}
-
-#pragma vector = USCIAB0RX_VECTOR
-__interrupt void USCI0RX_ISR(void)
-{
-    UART_receive_callback();
 }
