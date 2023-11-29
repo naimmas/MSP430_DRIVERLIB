@@ -11,6 +11,25 @@
 
 #include "uart.h"
 
+/**
+ * @brief Setting UART device settings to default
+ * @note UART baud rate calcualtions for 16Mhz clock & 9600bps speed
+ * @param self UARTs device structures address
+ */
+void defaultBasicClock(UartDevice_t *self){
+    self->selectClockSource = SM_CLK;
+    //* For 16Mhz clock with 9600bps
+    self->clockPrescalar = 104;
+    self->firstModReg = 3;
+    self->secondModReg = 0;
+    self->overSampling = 1;
+    self->parity = NO_PARITY;
+    self->msborLsbFirst = LSB_FIRST;
+    self->numberofStopBits = STOP_BIT_1;
+    self->uartMode = UART_NORMAL_MODE;
+    self->uartCharLength = DATA_8_BIT;
+}
+
 OperationStatus_t initUART(UartDevice_t *self)
 {
 

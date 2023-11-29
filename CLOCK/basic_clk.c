@@ -13,7 +13,7 @@
 #include "gpio.h"
 void defaultBasicClock(BasicClock_t* basic_clk_structure)
 {
-    basic_clk_structure->dco_freq = DCO_FRQ_16MHZ;
+    basic_clk_structure->dco_freq = DCO_FRQ_1MHZ;
     basic_clk_structure->aux_clk = ACLK_SRC_VLO;
     basic_clk_structure->main_clk = MCLK_SRC_DCO;
     basic_clk_structure->submain_clk = SMCLK_SRC_DCO;
