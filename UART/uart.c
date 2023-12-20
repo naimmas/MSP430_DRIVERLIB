@@ -16,7 +16,7 @@
  * @note UART baud rate calcualtions for 16Mhz clock & 9600bps speed
  * @param self UARTs device structures address
  */
-void defaultBasicClock(UartDevice_t *self){
+void defaultUART(UartDevice_t *self){
     self->selectClockSource = SM_CLK;
     //* For 16Mhz clock with 9600bps
     self->clockPrescalar = 104;
