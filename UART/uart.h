@@ -113,6 +113,7 @@ typedef struct USCI_A_UART_device {
     void (*setInterrupt)(UartInterruptMode_t interrupt_mode);
 }UartDevice_t;
 
+void defaultUART(UartDevice_t *self);
 OperationStatus_t initUART(UartDevice_t* self);
 
 static inline void __uart_enable();
