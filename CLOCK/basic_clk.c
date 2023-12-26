@@ -24,12 +24,12 @@ void defaultBasicClock(BasicClock_t* basic_clk_structure)
 }
 void initBasicClock(BasicClock_t* basic_clk_structure)
 {
-    basic_clk_structure->disableWDT = __basic_clk_disable_wdt;
-    basic_clk_structure->enableOscFaultInt = __enable_osc_fault_interrupt;
-    basic_clk_structure->setDCOFreq = __basic_clk_set_dco_frq;
-    basic_clk_structure->configAuxClk = __basic_clk_cfg_aux_clk;
-    basic_clk_structure->configMainClk = __basic_clk_cfg_main_clk;
-    basic_clk_structure->configSubMainClk = __basic_clk_cfg_submain_clk;
+    basic_clk_structure->api->disableWDT = __basic_clk_disable_wdt;
+    basic_clk_structure->api->enableOscFaultInt = __enable_osc_fault_interrupt;
+    basic_clk_structure->api->setDCOFreq = __basic_clk_set_dco_frq;
+    basic_clk_structure->api->configAuxClk = __basic_clk_cfg_aux_clk;
+    basic_clk_structure->api->configMainClk = __basic_clk_cfg_main_clk;
+    basic_clk_structure->api->configSubMainClk = __basic_clk_cfg_submain_clk;
     __basic_clk_disable_wdt();
     __basic_clk_set_dco_frq(basic_clk_structure);
     __basic_clk_cfg_aux_clk(basic_clk_structure);

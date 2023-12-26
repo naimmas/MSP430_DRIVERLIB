@@ -20,8 +20,15 @@ typedef enum
     I2C_DEVICE_MASTER = 1
 } I2cDeviceType_t;
 
-typedef struct I2C_device_t I2C_device_t;
-struct I2C_device_t
+typedef struct I2cDevice_t I2cDevice_t;
+
+typedef struct I2C_DEVICE_API
+{
+    void (*transfer_data)(I2cDevice_t *self, uint8_t useISR);
+    uint8_t (*check_slave)(uint8_t slaveAddress);
+    uint8_t (*check_line)();
+} I2cDevApi_t;
+struct I2cDevice_t
 {
     I2cDeviceType_t device_type;
     uint16_t clock_prescaler;
@@ -29,12 +36,10 @@ struct I2C_device_t
     volatile uint8_t is_transfer_cmplt;
     unsigned char *dataBuffer;
     volatile uint8_t dataSize;
-    void (*transfer_data)(I2C_device_t *self, uint8_t useISR);
-    uint8_t (*check_slave)(uint8_t slaveAddress);
-    uint8_t (*check_line)();
+    I2cDevApi_t *api;
 };
 
-OperationStatus_t initI2C(I2C_device_t *self);
-static void(__i2c_transfer_data)(I2C_device_t *self, uint8_t useISR);
+OperationStatus_t initI2C(I2cDevice_t *self);
+static void(__i2c_transfer_data)(I2cDevice_t *self, uint8_t useISR);
 static uint8_t(__i2c_check_slave)(uint8_t slaveAddress);
 static uint8_t(__i2c_check_line)();

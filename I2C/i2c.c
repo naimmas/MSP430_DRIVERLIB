@@ -14,9 +14,9 @@
 
 static uint8_t isMaster = false;
 unsigned char byteCtr;
-I2C_device_t *i2c_device_struct;
+I2cDevice_t *i2c_device_struct;
 
-OperationStatus_t initI2C(I2C_device_t *self)
+OperationStatus_t initI2C(I2cDevice_t *self)
 {
     SPC_BIT_SET(P1SEL, SDA_PIN + SCL_PIN);  // Assign I2C pins to USCI_B0
     SPC_BIT_SET(P1SEL2, SDA_PIN + SCL_PIN); // Assign I2C pins to USCI_B0
@@ -45,14 +45,14 @@ OperationStatus_t initI2C(I2C_device_t *self)
     default:
         return STATUS_FAILURE;
     }
-    self->transfer_data = __i2c_transfer_data;
-    self->check_line = __i2c_check_line;
-    self->check_slave = __i2c_check_slave;
+    self->api->transfer_data = __i2c_transfer_data;
+    self->api->check_line = __i2c_check_line;
+    self->api->check_slave = __i2c_check_slave;
     SPC_BIT_CLR(UCB0CTL1, UCSWRST); // Clear SW reset, resume operation
     i2c_device_struct = self;
     return STATUS_SUCCESS;
 }
-static void(__i2c_transfer_data)(I2C_device_t *self, uint8_t useISR)
+static void(__i2c_transfer_data)(I2cDevice_t *self, uint8_t useISR)
 {
     switch (self->device_type)
     {
@@ -92,7 +92,8 @@ static uint8_t(__i2c_check_line)()
 }
 
 #pragma vector = USCIAB0RX_VECTOR
-__interrupt void USCIAB0RX_ISR(void)
+__interrupt
+void USCIAB0RX_ISR(void)
 {
     switch (i2c_device_struct->device_type)
     {
@@ -110,7 +111,8 @@ __interrupt void USCIAB0RX_ISR(void)
 }
 
 #pragma vector = USCIAB0TX_VECTOR
-__interrupt void USCIAB0TX_ISR(void)
+__interrupt
+void USCIAB0TX_ISR(void)
 {
     switch (i2c_device_struct->device_type)
     {

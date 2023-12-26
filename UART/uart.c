@@ -65,12 +65,12 @@ OperationStatus_t initUART(UartDevice_t *self)
     SPC_BIT_CLR(UCA0CTL0, UCPEN | UCPAR);
     SPC_BIT_SET(UCA0CTL0, self->parity);
 
-    self->enable = __uart_enable;
-    self->disable = __uart_disable;
-    self->print = __uart_puts;
-    self->read = __uart_receiveData;
-    self->setLoopBack = __uart_loopbackEnable;
-    self->setInterrupt = __uart_enable_interrupt;
+    self->api->enable = __uart_enable;
+    self->api->disable = __uart_disable;
+    self->api->print = __uart_puts;
+    self->api->read = __uart_receiveData;
+    self->api->setLoopBack = __uart_loopbackEnable;
+    self->api->setInterrupt = __uart_enable_interrupt;
     __uart_enable();
     return STATUS_SUCCESS;
 }
