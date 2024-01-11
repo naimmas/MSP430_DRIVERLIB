@@ -61,11 +61,18 @@ inline void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
 {
     GPIO_WRITE_HIGH(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
+inline void GPIO_writeOuputPort(uint8_t port, uint8_t value)
+{
+    *GPIO_registerAddresses[(1)+(port<<2)] = value;
+}
 inline void GPIO_toggleDigitalPin(uint8_t port, uint8_t pin)
 {
     GPIO_TOGGLE(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
-
+inline uint8_t GPIO_getDigitalPort(uint8_t port)
+{
+    return *GPIO_registerAddresses[(0)+(port<<2)];
+}
 inline bool GPIO_getDigitalPin(uint8_t port, uint8_t pin)
 {
     return GPIO_READ(*GPIO_registerAddresses[(port<<2)], pin);

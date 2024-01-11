@@ -8,9 +8,8 @@
  * @copyright Copyright (c) 2023
  * 
  */
-
+#pragma once
 #include "../common.h"
 
-extern const uint8_t crc8_table[256];
-
-uint8_t calculate_crc8(const uint8_t *data, uint16_t length);
+uint8_t calculate_crc8(volatile const uint8_t *data, uint8_t size);
+bool check_crc8(volatile const uint8_t *data, uint8_t size);

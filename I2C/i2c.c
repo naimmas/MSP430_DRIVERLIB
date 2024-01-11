@@ -12,46 +12,47 @@
 #include "i2c.h"
 #include "msp430.h"
 
-static uint8_t isMaster = false;
 unsigned char byteCtr;
-I2cDevice_t *i2c_device_struct;
 
+/**
+ * @brief if the address is 0 then the module is disabled
+ * 
+ * @param self 
+ * @return OperationStatus_t 
+ */
 OperationStatus_t initI2C(I2cDevice_t *self)
 {
     SPC_BIT_SET(P1SEL, SDA_PIN + SCL_PIN);  // Assign I2C pins to USCI_B0
     SPC_BIT_SET(P1SEL2, SDA_PIN + SCL_PIN); // Assign I2C pins to USCI_B0
-    SPC_BIT_SET(UCB0CTL1, UCSWRST);         // Enable SW reset
-    switch (self->device_type)
-    {
-    case I2C_DEVICE_MASTER:
-        if ((self->clock_prescaler & self->device_address) == 0)
-            return STATUS_FAILURE;
-        SPC_BIT_SET(UCB0CTL0, UCMST + UCMODE_3 + UCSYNC); // I2C Master, synchronous mode
-        SPC_BIT_SET(UCB0CTL1, UCSSEL_2 + UCSWRST);        // Use SMCLK, keep SW reset
-        UCB0BR0 = GET_LOW_BYTE(self->clock_prescaler);    // set prescaler
-        UCB0BR1 = GET_HIGH_BYTE(self->clock_prescaler);
-        UCB0I2CSA = self->device_address; // set slave address
-        SPC_BIT_SET(UCB0I2CIE, UCNACKIE);
-        SPC_BIT_SET(IE2, UCB0RXIE); // Enable RX interrupt
-        break;
-
-    case I2C_DEVICE_SLAVE:
-        SPC_BIT_SET(UCB0CTL0, UCMODE_3 + UCSYNC); // I2C Slave, synchronous mode
-        UCB0I2COA = self->device_address;         // set own (slave) address
-        SPC_BIT_SET(IE2, UCB0RXIE + UCB0TXIE);    // Enable RX interrupt
-        SPC_BIT_SET(UCB0I2CIE, UCSTTIE);          // Enable STT interrupt
-        break;
-
-    default:
+    __i2c_disable();
+#ifdef I2C_DEVICE_MASTER
+    if ((self->clock_prescaler & self->device_address) == 0)
         return STATUS_FAILURE;
-    }
+    SPC_BIT_SET(UCB0CTL0, UCMST + UCMODE_3 + UCSYNC); // I2C Master, synchronous mode
+    SPC_BIT_SET(UCB0CTL1, UCSSEL_2 + UCTR);        // Use SMCLK, set transmitter bit
+    UCB0BR0 = GET_LOW_BYTE(self->clock_prescaler);    // set prescaler
+    UCB0BR1 = GET_HIGH_BYTE(self->clock_prescaler);
+    UCB0I2CSA = self->device_address; // set slave address
+    SPC_BIT_SET(UCB0I2CIE, UCNACKIE);
+    SPC_BIT_SET(IE2, UCB0RXIE); // Enable RX interrupt
     self->api->transfer_data = __i2c_transfer_data;
-    self->api->check_line = __i2c_check_line;
     self->api->check_slave = __i2c_check_slave;
-    SPC_BIT_CLR(UCB0CTL1, UCSWRST); // Clear SW reset, resume operation
-    i2c_device_struct = self;
+
+#else
+    SPC_BIT_SET(UCB0CTL0, UCMODE_3 + UCSYNC); // I2C Slave, synchronous mode
+    UCB0I2COA = self->device_address + 0x8000;         // set own (slave) address, enable general call
+    SPC_BIT_SET(IE2, UCB0RXIE + UCB0TXIE);    // Enable RX interrupt
+    SPC_BIT_SET(UCB0I2CIE, UCSTTIE);          // Enable STT interrupt
+
+#endif
+    self->api->check_line = __i2c_check_line;
+    self->api->enable = __i2c_enable; // Enable I2C module
+    self->api->disable = __i2c_disable; // Disable I2C module
+    self->api->set_address = __i2c_set_address;
+    if(self->device_address) __i2c_enable();
     return STATUS_SUCCESS;
 }
+#ifdef I2C_DEVICE_MASTER
 static void(__i2c_transfer_data)(I2cDevice_t *self, uint8_t useISR)
 {
     switch (self->device_type)
@@ -86,52 +87,28 @@ static uint8_t(__i2c_check_slave)(uint8_t slaveAddress)
     return returnValue;       // return whether or not
                               // a NACK occured
 }
+#endif
+static inline void __i2c_set_address(I2cDevice_t* self, uint8_t new_address)
+{
+    self->device_address = new_address; 
+    __i2c_disable();
+    #ifdef I2C_DEVICE_MASTER
+    UCB0I2CSA = address;
+    #else
+    UCB0I2COA = new_address;
+    #endif
+    __i2c_enable();  
+}
 static uint8_t(__i2c_check_line)()
 {
     return (UCB0STAT & UCBBUSY);
 }
 
-#pragma vector = USCIAB0RX_VECTOR
-__interrupt
-void USCIAB0RX_ISR(void)
+static inline void __i2c_enable()
 {
-    switch (i2c_device_struct->device_type)
-    {
-    case I2C_DEVICE_MASTER:
-        if (UCB0STAT & UCNACKIFG)
-        {
-            UCB0CTL1 |= UCTXSTP;
-            UCB0STAT &= ~UCNACKIFG;
-        }
-        return;
-    case I2C_DEVICE_SLAVE:
-        UCB0STAT &= ~(UCSTPIFG + UCSTTIFG); // Clear interrupt flags
-        return;
-    }
+    SPC_BIT_CLR(UCB0CTL1, UCSWRST);
 }
-
-#pragma vector = USCIAB0TX_VECTOR
-__interrupt
-void USCIAB0TX_ISR(void)
+static inline void __i2c_disable()
 {
-    switch (i2c_device_struct->device_type)
-    {
-    case I2C_DEVICE_MASTER:
-        if (byteCtr == 0)
-        {
-            UCB0CTL1 |= UCTXSTP; // I2C stop condition
-            IFG2 &= ~UCB0TXIFG;  // Clear USCI_B0 TX int flag
-        }
-        else
-        {
-            UCB0TXBUF = i2c_device_struct->dataBuffer;
-            i2c_device_struct->dataBuffer++;
-            byteCtr--;
-        }
-        return;
-    case I2C_DEVICE_SLAVE:
-        *i2c_device_struct->dataBuffer++ = UCB0RXBUF; // Move RX data to address PRxData
-        byteCtr++;                                    // Increment RX byte count
-        return;
-    }
+    SPC_BIT_SET(UCB0CTL1, UCSWRST);
 }

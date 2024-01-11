@@ -14,32 +14,33 @@
 #define SDA_PIN BIT7 // P1.7
 #define SCL_PIN BIT6 // P1.6
 
-typedef enum
-{
-    I2C_DEVICE_SLAVE = 0,
-    I2C_DEVICE_MASTER = 1
-} I2cDeviceType_t;
 
 typedef struct I2cDevice_t I2cDevice_t;
 
 typedef struct I2C_DEVICE_API
 {
+    uint8_t (*check_line)();
+    void (*enable) ();
+    void (*disable) ();
+    void (*set_address)(I2cDevice_t *self, uint8_t new_address);
+#ifdef I2C_DEVICE_MASTER
     void (*transfer_data)(I2cDevice_t *self, uint8_t useISR);
     uint8_t (*check_slave)(uint8_t slaveAddress);
-    uint8_t (*check_line)();
+#endif
 } I2cDevApi_t;
 struct I2cDevice_t
 {
-    I2cDeviceType_t device_type;
     uint16_t clock_prescaler;
     uint8_t device_address;
-    volatile uint8_t is_transfer_cmplt;
-    unsigned char *dataBuffer;
-    volatile uint8_t dataSize;
     I2cDevApi_t *api;
 };
 
 OperationStatus_t initI2C(I2cDevice_t *self);
+static uint8_t(__i2c_check_line)();
+static inline void __i2c_enable();
+static inline void __i2c_disable();
+static inline void __i2c_set_address(I2cDevice_t *self, uint8_t new_address);
+#ifdef I2C_DEVICE_MASTER
 static void(__i2c_transfer_data)(I2cDevice_t *self, uint8_t useISR);
 static uint8_t(__i2c_check_slave)(uint8_t slaveAddress);
-static uint8_t(__i2c_check_line)();
+#endif
