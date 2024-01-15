@@ -56,3 +56,4 @@ bool check_crc8(volatile const uint8_t *data, uint8_t size)
 {
     return 0==calculate_crc8(data, size);
 }
+

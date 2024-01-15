@@ -71,11 +71,11 @@ void GPIO_toggleDigitalPin(uint8_t port, uint8_t pin)
 }
 uint8_t GPIO_getDigitalPort(uint8_t port)
 {
-    return *GPIO_registerAddresses[(0)+(port<<2)];
+    return (*GPIO_registerAddresses[(0)+(port<<2)]);
 }
 bool GPIO_getDigitalPin(uint8_t port, uint8_t pin)
 {
-    return GPIO_READ(*GPIO_registerAddresses[(port<<2)], pin);
+    return (GPIO_READ(*GPIO_registerAddresses[(port<<2)], pin));
 }
 
 void GPIO_enableInterrupt(uint8_t port, uint8_t pin, bool edge_select)

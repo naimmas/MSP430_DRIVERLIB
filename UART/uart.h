@@ -42,12 +42,6 @@
 
 #include "../common.h"
 #include "msp430.h"
-//*****************************************************************************
-//
-// The following are values that can be passed to the param parameter for
-// functions: USCI_A_UART_init().
-//
-//*****************************************************************************
 
 typedef enum
 {
