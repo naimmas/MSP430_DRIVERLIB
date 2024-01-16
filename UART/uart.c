@@ -10,7 +10,7 @@
  */
 
 #include "uart.h"
-
+static uint8_t uart_ie;
 /**
  * @brief Setting UART device settings to default
  * @note UART baud rate calcualtions for 16Mhz clock & 9600bps speed
@@ -64,7 +64,7 @@ OperationStatus_t initUART(UartDevice_t *self)
                 (self->overSampling));
     SPC_BIT_CLR(UCA0CTL0, UCPEN | UCPAR);
     SPC_BIT_SET(UCA0CTL0, self->parity);
-
+    self->api = (UartDevApi_t*)malloc(sizeof(UartDevApi_t));
     self->api->enable = __uart_enable;
     self->api->disable = __uart_disable;
     self->api->print = __uart_puts;
@@ -78,6 +78,7 @@ OperationStatus_t initUART(UartDevice_t *self)
 static inline void __uart_enable()
 {
     SPC_BIT_CLR(UCA0CTL1, UCSWRST);
+    if(uart_ie) __uart_enable_interrupt(uart_ie);
 }
 static inline void __uart_disable()
 {
@@ -123,6 +124,7 @@ static uint8_t __uart_receiveData()
 static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode)
 {
     __disable_interrupt();
+    uart_ie = interrupt_mode;
     SPC_BIT_CLR(IE2, UCA0TXIE | UCA0RXIE);
     SPC_BIT_SET(IE2, interrupt_mode);
     __enable_interrupt();

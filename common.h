@@ -11,6 +11,7 @@
 #pragma once
 #include "stdint.h"
 #include "stdbool.h"
+#include "stdlib.h"
 
 #ifndef LOCAL_TEST
 #include "msp430.h"

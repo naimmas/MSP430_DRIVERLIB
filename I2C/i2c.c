@@ -12,6 +12,8 @@
 #include "i2c.h"
 #include "msp430.h"
 
+// TODO: Implement interrupt enable function
+// TODO: Documentation
 unsigned char byteCtr;
 
 /**
@@ -41,10 +43,12 @@ OperationStatus_t initI2C(I2cDevice_t *self)
 #else
     SPC_BIT_SET(UCB0CTL0, UCMODE_3 + UCSYNC); // I2C Slave, synchronous mode
     UCB0I2COA = self->device_address + 0x8000;         // set own (slave) address, enable general call
+    __i2c_enable();
     SPC_BIT_SET(IE2, UCB0RXIE + UCB0TXIE);    // Enable RX interrupt
     SPC_BIT_SET(UCB0I2CIE, UCSTTIE);          // Enable STT interrupt
 
 #endif
+    self->api = (I2cDevApi_t*) malloc(sizeof(I2cDevApi_t));
     self->api->check_line = __i2c_check_line;
     self->api->enable = __i2c_enable; // Enable I2C module
     self->api->disable = __i2c_disable; // Disable I2C module
@@ -107,6 +111,8 @@ static uint8_t(__i2c_check_line)()
 static inline void __i2c_enable()
 {
     SPC_BIT_CLR(UCB0CTL1, UCSWRST);
+    SPC_BIT_SET(IE2, UCB0RXIE + UCB0TXIE);    // Enable RX interrupt
+    SPC_BIT_SET(UCB0I2CIE, UCSTTIE);          // Enable STT interrupt
 }
 static inline void __i2c_disable()
 {

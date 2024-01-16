@@ -24,6 +24,7 @@ void defaultBasicClock(BasicClock_t* basic_clk_structure)
 }
 void initBasicClock(BasicClock_t* basic_clk_structure)
 {
+    basic_clk_structure->api = (BasicClockApi_t*)malloc(sizeof(BasicClockApi_t));
     basic_clk_structure->api->disableWDT = __basic_clk_disable_wdt;
     basic_clk_structure->api->enableOscFaultInt = __enable_osc_fault_interrupt;
     basic_clk_structure->api->setDCOFreq = __basic_clk_set_dco_frq;
