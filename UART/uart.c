@@ -100,14 +100,10 @@ static void __uart_puts(const char *msg, const uint16_t dataSize)
 }
 static inline void __uart_transmitData(unsigned char data)
 {
-    if (SPC_BIT_CHK(IE2, UCA0TXIE))
-    {
-        while (SPC_BIT_CHK(IFG2, UCA0TXIFG))
-            ;
-    }
-    while (SPC_BIT_CHK(UCA0STAT, UCBUSY))
-        ;
+    while (!SPC_BIT_CHK(IFG2, UCA0TXIFG));
     UCA0TXBUF = data;
+    while (UCA0STAT & UCBUSY);    // Wait until the complete character is sent
+
 }
 static uint8_t __uart_receiveData()
 {

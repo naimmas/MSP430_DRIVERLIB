@@ -34,7 +34,7 @@ typedef struct chipSelect_t
 
 void initSPI(chipSelect_t *cs_pin, SpiClkSource_t clk_src, uint16_t clk_prescaler);
 void SPI_EnableInterrupt(SpiInterruptMode_t ie_mode);
-// TODO 
+// TODO: Implementation
 void SPI_Enable(bool state);
 uint8_t SPI_WriteByte(uint8_t data);
 uint8_t SPI_ReadByte(uint8_t dummy_char);
