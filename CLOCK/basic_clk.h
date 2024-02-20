@@ -77,7 +77,7 @@ struct BasicClock_t
     LFCrystalCapacitor_t xcap;
     BasicClockApi_t *api;
 };
-
+void defaultBasicClock(BasicClock_t* basic_clk_structure);
 void initBasicClock(BasicClock_t *basic_clk_structure);
 static inline void __basic_clk_disable_wdt();
 static inline void __enable_osc_fault_interrupt();

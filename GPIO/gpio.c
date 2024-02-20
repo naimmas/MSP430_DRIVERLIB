@@ -53,11 +53,11 @@ void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin)
     BIT_CLR(*GPIO_registerAddresses[(3)+(port<<2)], pin);
 }
 
-void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin)
+inline void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin)
 {
     GPIO_WRITE_LOW(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
-void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
+inline void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
 {
     GPIO_WRITE_HIGH(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
@@ -78,7 +78,7 @@ bool GPIO_getDigitalPin(uint8_t port, uint8_t pin)
     return (GPIO_READ(*GPIO_registerAddresses[(port<<2)], pin));
 }
 
-void GPIO_enableInterrupt(uint8_t port, uint8_t pin, bool edge_select)
+inline void GPIO_enableInterrupt(uint8_t port, uint8_t pin, bool edge_select)
 {
     if(GPIO_PORT_3 == port) return;
 
@@ -87,7 +87,7 @@ void GPIO_enableInterrupt(uint8_t port, uint8_t pin, bool edge_select)
     *GPIO_registerAddresses[13+((port)<<1)] |= (edge_select << pin);
 }
 
-void GPIO_disableInterrupt(uint8_t port, uint8_t pin)
+inline void GPIO_disableInterrupt(uint8_t port, uint8_t pin)
 {
     if(GPIO_PORT_3 == port) return;
 

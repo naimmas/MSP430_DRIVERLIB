@@ -14,7 +14,7 @@
  * @brief
  * ! accuracy is 100us with 16Mhz cpu frequency
  */
-#define FRQ_CPU FRQ_1MHz
+#define FRQ_CPU FRQ_16MHz
 #ifndef FRQ_CPU
 #error CPU clock frequency is not defined
 #else
