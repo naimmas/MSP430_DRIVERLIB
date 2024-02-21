@@ -10,7 +10,7 @@
  */
 
 #include "uart.h"
-static uint8_t uart_ie;
+static UartInterruptMode_t uart_ie;
 /**
  * @brief Setting UART device settings to default
  * @note UART baud rate calcualtions for 16Mhz clock & 9600bps speed
