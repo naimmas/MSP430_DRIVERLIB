@@ -119,9 +119,7 @@ static uint8_t __uart_receiveData()
 
 static void __uart_enable_interrupt(UartInterruptMode_t interrupt_mode)
 {
-    __disable_interrupt();
     uart_ie = interrupt_mode;
     SPC_BIT_CLR(IE2, UCA0TXIE | UCA0RXIE);
     SPC_BIT_SET(IE2, interrupt_mode);
-    __enable_interrupt();
 }

@@ -46,13 +46,13 @@ OperationStatus_t initI2C(I2cDevice_t *self)
     __i2c_enable();
     SPC_BIT_SET(IE2, UCB0RXIE + UCB0TXIE);    // Enable RX interrupt
     SPC_BIT_SET(UCB0I2CIE, UCSTTIE);          // Enable STT interrupt
-
 #endif
     self->api = (I2cDevApi_t*) malloc(sizeof(I2cDevApi_t));
     self->api->check_line = __i2c_check_line;
     self->api->enable = __i2c_enable; // Enable I2C module
     self->api->disable = __i2c_disable; // Disable I2C module
     self->api->set_address = __i2c_set_address;
+    self->api->enable_generalCall = __i2c_set_gc;
     if(self->device_address) __i2c_enable();
     return STATUS_SUCCESS;
 }
@@ -107,7 +107,11 @@ static uint8_t(__i2c_check_line)()
 {
     return (UCB0STAT & UCBBUSY);
 }
-
+static inline void __i2c_set_gc(uint8_t enable)
+{
+    if(enable)  SPC_BIT_SET(UCB0I2COA, UCGCEN);
+    else        SPC_BIT_CLR(UCB0I2COA, UCGCEN);
+}
 static inline void __i2c_enable()
 {
     SPC_BIT_CLR(UCB0CTL1, UCSWRST);

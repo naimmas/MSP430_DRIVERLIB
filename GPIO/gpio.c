@@ -33,21 +33,28 @@ volatile static unsigned char * const GPIO_registerAddresses[] = {
     &P2IES  //0xF
 };
 
-void GPIO_setModeInput(uint8_t port, uint8_t pin)
+inline void GPIO_setModeInput(uint8_t port, uint8_t pin)
 {
     GPIO_SET_IN(*GPIO_registerAddresses[(2)+(port<<2)], pin);
 }
-void GPIO_setModeOutput(uint8_t port, uint8_t pin)
+inline void GPIO_setModeOutput(uint8_t port, uint8_t pin)
 {
     GPIO_SET_OUT(*GPIO_registerAddresses[(2)+(port<<2)], pin);
 }
-
-void GPIO_setModeInputWithPullUp(uint8_t port, uint8_t pin)
+inline void GPIO_setPortOutput(uint8_t port)
+{
+    *GPIO_registerAddresses[(2)+(port<<2)] = 0xFF;
+}
+inline void GPIO_setPortInput(uint8_t port)
+{
+    *GPIO_registerAddresses[(2)+(port<<2)] = 0x00;
+}
+inline void GPIO_setModeInputWithPullUp(uint8_t port, uint8_t pin)
 {
     GPIO_setModeInput(port, pin);
     BIT_SET(*GPIO_registerAddresses[(3)+(port<<2)], pin);
 }
-void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin)
+inline void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin)
 {
     GPIO_setModeInput(port, pin);
     BIT_CLR(*GPIO_registerAddresses[(3)+(port<<2)], pin);
@@ -61,19 +68,19 @@ inline void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
 {
     GPIO_WRITE_HIGH(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
-void GPIO_writeOuputPort(uint8_t port, uint8_t value)
+inline void GPIO_writeOuputPort(uint8_t port, uint8_t value)
 {
     *GPIO_registerAddresses[(1)+(port<<2)] = value;
 }
-void GPIO_toggleDigitalPin(uint8_t port, uint8_t pin)
+inline void GPIO_toggleDigitalPin(uint8_t port, uint8_t pin)
 {
     GPIO_TOGGLE(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
-uint8_t GPIO_getDigitalPort(uint8_t port)
+inline uint8_t GPIO_getDigitalPort(uint8_t port)
 {
     return (*GPIO_registerAddresses[(0)+(port<<2)]);
 }
-bool GPIO_getDigitalPin(uint8_t port, uint8_t pin)
+inline bool GPIO_getDigitalPin(uint8_t port, uint8_t pin)
 {
     return (GPIO_READ(*GPIO_registerAddresses[(port<<2)], pin));
 }

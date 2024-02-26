@@ -23,6 +23,7 @@ typedef struct I2C_DEVICE_API
     void (*enable) ();
     void (*disable) ();
     void (*set_address)(I2cDevice_t *self, uint8_t new_address);
+    void (*enable_generalCall)(uint8_t enable);
 #ifdef I2C_DEVICE_MASTER
     void (*transfer_data)(I2cDevice_t *self, uint8_t useISR);
     uint8_t (*check_slave)(uint8_t slaveAddress);
@@ -40,6 +41,7 @@ static uint8_t(__i2c_check_line)();
 static inline void __i2c_enable();
 static inline void __i2c_disable();
 static inline void __i2c_set_address(I2cDevice_t *self, uint8_t new_address);
+static inline void __i2c_set_gc(uint8_t enable);
 #ifdef I2C_DEVICE_MASTER
 static void(__i2c_transfer_data)(I2cDevice_t *self, uint8_t useISR);
 static uint8_t(__i2c_check_slave)(uint8_t slaveAddress);
