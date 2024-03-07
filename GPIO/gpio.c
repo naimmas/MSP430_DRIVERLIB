@@ -52,12 +52,14 @@ inline void GPIO_setPortInput(uint8_t port)
 inline void GPIO_setModeInputWithPullUp(uint8_t port, uint8_t pin)
 {
     GPIO_setModeInput(port, pin);
-    BIT_SET(*GPIO_registerAddresses[(3)+(port<<2)], pin);
+    BIT_SET(*(GPIO_registerAddresses[(3)+(port<<2)]), pin);
+    GPIO_setDigitalPinHigh(port, pin);
 }
 inline void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin)
 {
     GPIO_setModeInput(port, pin);
-    BIT_CLR(*GPIO_registerAddresses[(3)+(port<<2)], pin);
+    BIT_SET(*(GPIO_registerAddresses[(3)+(port<<2)]), pin);
+    GPIO_setDigitalPinLow(port, pin);
 }
 
 inline void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin)

@@ -29,6 +29,8 @@
 #define FRQ_12MHz 12000000UL
 #define FRQ_16MHz 16000000UL
 
+#define FRQ_CPU FRQ_1MHz
+
 /**
  * @brief Set n.bit in byte 0->1
  * @param byte: desired byte

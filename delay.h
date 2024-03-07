@@ -10,11 +10,11 @@
  */
 
 #pragma once
+#include "common.h"
 /**
  * @brief
  * ! accuracy is 100us with 16Mhz cpu frequency
  */
-#define FRQ_CPU FRQ_1MHz
 #ifndef FRQ_CPU
 #error CPU clock frequency is not defined
 #else

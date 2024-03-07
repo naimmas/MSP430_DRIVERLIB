@@ -42,7 +42,7 @@ OperationStatus_t initI2C(I2cDevice_t *self)
 
 #else
     SPC_BIT_SET(UCB0CTL0, UCMODE_3 + UCSYNC); // I2C Slave, synchronous mode
-    UCB0I2COA = self->device_address + 0x8000;         // set own (slave) address, enable general call
+    UCB0I2COA = self->device_address;         // set own (slave) address, enable general call
     __i2c_enable();
     SPC_BIT_SET(IE2, UCB0RXIE + UCB0TXIE);    // Enable RX interrupt
     SPC_BIT_SET(UCB0I2CIE, UCSTTIE);          // Enable STT interrupt

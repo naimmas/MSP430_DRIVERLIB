@@ -19,21 +19,13 @@
 #define GPIO_PORT_2 1U
 #define GPIO_PORT_3 2U
 
+
 #define GPIO_SET_IN(port, pin)      BIT_CLR(port, pin)
 #define GPIO_SET_OUT(port,pin)      BIT_SET(port, pin)
 #define GPIO_READ(port, pin)        BIT_CHK(port, pin)
 #define GPIO_WRITE_HIGH(port, pin)  BIT_SET(port, pin)
 #define GPIO_WRITE_LOW(port, pin)   BIT_CLR(port, pin)
-#define GPIO_TOGGLE(port, pin)      BIT_TOG(port, pin);
-
-#define GPIO_RES_PDN(port, pin)  { \
-            GPIO_SET_IN(port,pin); \
-            BIT_SET(port, pin); \
-            BIT_CLR(port, pin);}
-#define GPIO_RES_PUP(port, pin)  { \
-            GPIO_SET_IN(port,pin); \
-            BIT_SET(port, pin); \
-            BIT_SET(port, pin);}
+#define GPIO_TOGGLE(port, pin)      BIT_TOG(port, pin)
 
 inline void GPIO_setModeInput(uint8_t port, uint8_t pin);
 inline void GPIO_setModeInputWithPullUp(uint8_t port, uint8_t pin);

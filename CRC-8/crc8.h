@@ -10,6 +10,5 @@
  */
 #pragma once
 #include "../common.h"
-
 uint8_t calculate_crc8(volatile const uint8_t *data, uint8_t size);
 bool check_crc8(volatile const uint8_t *data, uint8_t size);
