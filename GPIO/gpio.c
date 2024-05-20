@@ -33,11 +33,11 @@ volatile static unsigned char * const GPIO_registerAddresses[] = {
     &P2IES  //0xF
 };
 
-inline void GPIO_setModeInput(uint8_t port, uint8_t pin)
+void GPIO_setModeInput(uint8_t port, uint8_t pin)
 {
     GPIO_SET_IN(*GPIO_registerAddresses[(2)+(port<<2)], pin);
 }
-inline void GPIO_setModeOutput(uint8_t port, uint8_t pin)
+void GPIO_setModeOutput(uint8_t port, uint8_t pin)
 {
     GPIO_SET_OUT(*GPIO_registerAddresses[(2)+(port<<2)], pin);
 }
@@ -62,11 +62,11 @@ inline void GPIO_setModeInputWithPullDown(uint8_t port, uint8_t pin)
     GPIO_setDigitalPinLow(port, pin);
 }
 
-inline void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin)
+void GPIO_setDigitalPinLow(uint8_t port, uint8_t pin)
 {
     GPIO_WRITE_LOW(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
-inline void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
+void GPIO_setDigitalPinHigh(uint8_t port, uint8_t pin)
 {
     GPIO_WRITE_HIGH(*GPIO_registerAddresses[(1)+(port<<2)], pin);
 }
